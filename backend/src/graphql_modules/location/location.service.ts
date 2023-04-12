@@ -15,8 +15,18 @@ export class LocationService {
     // return 'This action adds a new location';
   }
 
-  findAll() {
-    return this.prisma.location.findMany({ where: { isDeleted: false }});
+
+
+  findAll({orderBy}) {
+    const orderByObj = orderBy
+    ? { [orderBy]: "asc"}
+    : {}
+    return this.prisma.location.findMany(
+      { 
+        where: { isDeleted: false },
+        orderBy : orderByObj
+      }
+    );
     // return `This action returns all location`;
   }
 

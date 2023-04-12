@@ -20,16 +20,26 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Person {
+  id: Int!
+  name: String!
+  code: String
+}
+
 type Query {
   helloWorld: String!
-  locations: [Location!]!
+  locations(orderBy: String): [Location!]!
   location(id: Int!): Location!
+  persons: [Person!]!
+  person(id: Int!): Person!
 }
 
 type Mutation {
   createLocation(createLocationInput: CreateLocationInput!): Location!
   updateLocation(updateLocationInput: UpdateLocationInput!): Location!
   removeLocation(id: Int!): Location!
+  createPerson(createPersonInput: CreatePersonInput!): Person!
+  updatePerson(updatePersonInput: UpdatePersonInput!): Person!
 }
 
 input CreateLocationInput {
@@ -38,5 +48,16 @@ input CreateLocationInput {
 
 input UpdateLocationInput {
   name: String!
+  id: Int!
+}
+
+input CreatePersonInput {
+  name: String!
+  code: String
+}
+
+input UpdatePersonInput {
+  name: String!
+  code: String
   id: Int!
 }

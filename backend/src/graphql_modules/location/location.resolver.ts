@@ -14,8 +14,8 @@ export class LocationResolver {
   }
 
   @Query(() => [Location], { name: 'locations' })
-  findAll() {
-    return this.locationService.findAll();
+  findAll(@Args('orderBy', { nullable: true }) orderBy: string) {
+    return this.locationService.findAll({orderBy});
   }
 
   @Query(() => Location, { name: 'location' })
