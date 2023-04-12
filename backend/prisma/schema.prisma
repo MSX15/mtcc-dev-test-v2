@@ -9,3 +9,75 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// isDeleted                Boolean       @default(false)
+// createdById     Int?
+// createdAt       DateTime? @db.Timestamp(6)
+// modifiedById    Int?
+// modifiedAt      DateTime? @db.Timestamp(6)
+
+model Person {
+  id   Int     @id @default(autoincrement())
+  name String
+  code String?
+}
+
+model Status {
+  id                  Int     @id @default(autoincrement())
+  belongsToEntityType String?
+  name                String
+  isActive            Boolean
+  // trip                Trip[]
+  // tripRequest         TripRequest[]
+  // tripTicket          TripTicket[]
+}
+
+model Location {
+  id             Int       @id @default(autoincrement())
+  name           String
+  coordinateX    Decimal?  @db.Decimal
+  coordinateY    Decimal?  @db.Decimal
+  addressDetails String?
+  isDeleted      Boolean   @default(false)
+  createdById    Int?
+  createdAt      DateTime? @default(now()) @db.Timestamp(6)
+  modifiedById   Int?
+  modifiedAt     DateTime? @default(now()) @db.Timestamp(6)
+
+  trip_FromLocation Trip[] @relation("Trip_FromLocationIdToLocation")
+  trip_ToLocation   Trip[] @relation("Trip_ToLocationIdToLocation")
+  // tripRequest_FromLocation TripRequest[] @relation("TripRequest_FromLocationIdToLocation")
+  // tripRequest_ToLocation   TripRequest[] @relation("TripRequest_ToLocationIdToLocation")
+}
+
+model Trip {
+  id                           Int       @id @default(autoincrement())
+  fromLocationId               Int
+  toLocationId                 Int
+  departureTime                DateTime  @db.Timestamp(6)
+  arrivalTime                  DateTime  @db.Timestamp(6)
+  peopleCapacity               Int       @default(0)
+  // cargoVolumeCapacity Int          @default(0)
+  cargoWeightCapacity          Int       @default(0)
+  tripRequestId                Int?
+  statusId                     Int?
+  peopleCapacityRemaining      Int       @default(0)
+  cargoWeightCapacityRemaining Float     @default(0)
+  // cargoVolume         Float        @default(0)
+  createdById                  Int?
+  createdAt                    DateTime? @default(now()) @db.Timestamp(6)
+  modifiedById                 Int?
+  modifiedAt                   DateTime? @default(now()) @db.Timestamp(6)
+
+  fromLocation Location @relation("Trip_FromLocationIdToLocation", fields: [fromLocationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  toLocation   Location @relation("Trip_ToLocationIdToLocation", fields: [toLocationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  // createdBy           Person?      @relation("Trip_CreatedByIdToPerson", fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  // fromLocation        Location     @relation("Trip_FromLocationIdToLocation", fields: [fromLocationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  // modifiedBy          Person?      @relation("Trip_ModifiedByIdToPerson", fields: [modifiedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  // status              Status?      @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  // toLocation          Location     @relation("Trip_ToLocationIdToLocation", fields: [toLocationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  // tripRequest         TripRequest? @relation(fields: [tripRequestId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  // tripTickets         TripTicket[]
+
+  // @@index([tripRequestId], map: "fki_FK_Trip_TripRequestId_TripRequest_Id")
+}

@@ -2,6 +2,41 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Location {
+  id: Int!
+  name: String!
+  isDeleted: Boolean!
+  coordinateX: Float
+  coordinateY: Float
+  addressDetails: String
+  createdAt: DateTime
+  createdById: Float
+  modifiedAt: DateTime
+  modifiedById: Float
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
   helloWorld: String!
+  locations: [Location!]!
+  location(id: Int!): Location!
+}
+
+type Mutation {
+  createLocation(createLocationInput: CreateLocationInput!): Location!
+  updateLocation(updateLocationInput: UpdateLocationInput!): Location!
+  removeLocation(id: Int!): Location!
+}
+
+input CreateLocationInput {
+  name: String!
+}
+
+input UpdateLocationInput {
+  name: String!
+  id: Int!
 }
