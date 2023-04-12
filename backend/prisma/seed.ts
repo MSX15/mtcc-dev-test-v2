@@ -21,7 +21,6 @@ async function main() {
     where: { id: 1 },
     update: {},
     create: {
-        id: 1,
         name: 'Pending',
         isActive: true
   }})
@@ -29,7 +28,6 @@ async function main() {
     where: { id: 2 },
     update: {},
     create: {
-        id: 2,
         name: 'Completed',
         isActive: false
   }})
@@ -37,7 +35,6 @@ async function main() {
     where: { id: 3 },
     update: {},
     create: {
-        id: 3,
         name: 'Cancelled',
         isActive: false
   }})
@@ -45,7 +42,6 @@ async function main() {
     where: { id: 4 },
     update: {},
     create: {
-        id: 4,
         name: 'Rejected',
         isActive: false
   }})
@@ -55,7 +51,6 @@ async function main() {
       where: { id: 1 },
       update: {},
       create: {
-          id: 1,
           name: 'Adam One',
           code: 'M-0001'
     }})
@@ -63,7 +58,6 @@ async function main() {
     where: { id: 2 },
     update: {},
     create: {
-        id: 2,
         name: 'Hawwa Two',
         code: 'M-0002'
   }})
@@ -71,7 +65,6 @@ async function main() {
     where: { id: 3 },
     update: {},
     create: {
-        id: 3,
         name: 'Ibrahim Three',
         code: 'M-0003'
   }})
@@ -79,7 +72,6 @@ async function main() {
     where: { id: 4 },
     update: {},
     create: {
-        id: 4,
         name: 'Hajar Four',
         code: 'M-0004'
   }})
@@ -87,7 +79,6 @@ async function main() {
     where: { id: 5 },
     update: {},
     create: {
-        id: 5,
         name: 'Ismail Five',
         code: 'M-0005'
   }})
@@ -95,7 +86,6 @@ async function main() {
     where: { id: 6 },
     update: {},
     create: {
-        id: 6,
         name: 'Aminath Six',
         code: 'M-0006'
   }})
@@ -103,7 +93,6 @@ async function main() {
     where: { id: 7 },
     update: {},
     create: {
-        id: 7,
         name: 'Mohamed Seven',
         code: 'M-0007'
   }})
@@ -195,6 +184,43 @@ async function main() {
         isDeleted: false
   }})
   
+
+
+  ctr.reset();
+  await prisma.trip.upsert({
+    where: { id: ctr.next() },
+    update: {},
+    create: {
+        fromLocationId: 1,
+        toLocationId: 4,
+        // tripRequestId: 3,
+        departureTime: dayjs("2023-03-07T20:03:48.530").toDate(),
+        arrivalTime: dayjs("2023-03-07T23:03:48.530").toDate(),
+        cargoWeightCapacity: 2000,
+        peopleCapacity: 7,
+        createdById: 1,
+        modifiedById: 5,
+        createdAt: dayjs("2023-02-05T20:03:48.530").toDate(),
+        modifiedAt: dayjs("2023-02-15T20:03:48.530").toDate(),
+        statusId: 2
+  }})
+
+  await prisma.trip.upsert({
+    where: { id: ctr.next() },
+    update: {},
+    create: {
+        fromLocationId: 1,
+        toLocationId: 4,
+        departureTime: dayjs("2023-04-07T20:03:48.530").toDate(),
+        arrivalTime: dayjs("2023-04-07T20:03:48.530").toDate(),
+        cargoWeightCapacity: 2000,
+        peopleCapacity: 4,
+        createdById: 1,
+        modifiedById: 5,
+        createdAt: dayjs("2023-02-05T20:03:48.530").toDate(),
+        modifiedAt: dayjs("2023-02-15T20:03:48.530").toDate(),
+        statusId: 1
+  }})
     
 }
 

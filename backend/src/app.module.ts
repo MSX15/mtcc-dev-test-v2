@@ -5,6 +5,8 @@ import { AppResolver } from './app.resolver';
 import { AppService } from './app.service';
 import { LocationModule } from './graphql_modules/location/location.module';
 import { PersonModule } from './graphql_modules/person/person.module';
+import { TripModule } from './graphql_modules/trip/trip.module';
+import { TripRequestModule } from './graphql_modules/trip-request/trip-request.module';
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -15,9 +17,9 @@ import { PersonModule } from './graphql_modules/person/person.module';
     PersonModule,
     // CargoModule,
     // CargoDimensionCategoryModule,
-    // TripRequestModule,
+    TripRequestModule,
     // StatusModule,
-    // TripModule,
+    TripModule,
     // TripTicketModule,
   ],
   controllers: [],

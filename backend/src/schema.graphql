@@ -26,12 +26,74 @@ type Person {
   code: String
 }
 
+type Status {
+  id: Int!
+  name: String!
+  belongsToEntityType: String
+  isActive: Boolean!
+}
+
+type Trip {
+  id: Int!
+  fromLocationId: Int!
+  toLocationId: Int!
+  departureTime: DateTime!
+  arrivalTime: DateTime!
+  peopleCapacity: Int!
+  peopleCapacityRemaining: Int!
+  cargoWeightCapacityRemaining: Int!
+  cargoWeightCapacity: Int!
+  tripRequestId: Int
+  statusId: Int
+  createdById: Int
+  createdAt: DateTime
+  modifiedById: Int
+  modifiedAt: DateTime
+  status: Status!
+  fromLocation: Location!
+  toLocation: Location!
+}
+
+type TripRequest {
+  id: Int!
+  fromLocationId: Int!
+  fromLocation: Location!
+  toLocationId: Int!
+  toLocation: Location!
+  departEarliest: DateTime
+  departLatest: DateTime
+  arriveEarliest: DateTime
+  arriveLatest: DateTime
+  createdById: Int
+  createdBy: Person!
+  createdAt: DateTime
+  modifiedById: Int
+  modifiedBy: Person!
+  modifiedAt: DateTime
+  remarks: String
+  statusId: Int
+  status: Status!
+  personList: [Person!]
+}
+
 type Query {
   helloWorld: String!
   locations(orderBy: String): [Location!]!
   location(id: Int!): Location!
   persons: [Person!]!
   person(id: Int!): Person!
+  tripRequests: [TripRequest!]!
+  tripRequest(id: Int!): TripRequest!
+  trips(tripFilter: TripFilter): [Trip!]!
+  trip(id: Int!): Trip!
+}
+
+input TripFilter {
+  earliestDeparture: DateTime
+  latestDeparture: DateTime
+  earliestArrival: DateTime
+  latestArrival: DateTime
+  statusId: Int
 }
 
 type Mutation {
@@ -40,6 +102,10 @@ type Mutation {
   removeLocation(id: Int!): Location!
   createPerson(createPersonInput: CreatePersonInput!): Person!
   updatePerson(updatePersonInput: UpdatePersonInput!): Person!
+  createTripRequest(createTripRequestInput: CreateTripRequestInput!): TripRequest!
+  createTrip(createTripInput: CreateTripInput!): Trip!
+  updateTrip(updateTripInput: UpdateTripInput!): Trip!
+  removeTrip(id: Int!): Trip!
 }
 
 input CreateLocationInput {
@@ -60,4 +126,49 @@ input UpdatePersonInput {
   name: String!
   code: String
   id: Int!
+}
+
+input CreateTripRequestInput {
+  fromLocationId: Int!
+  toLocationId: Int!
+  departEarliest: DateTime
+  departLatest: DateTime
+  arriveEarliest: DateTime
+  arriveLatest: DateTime
+  remarks: String
+  createdById: Int
+  modifiedById: Int
+  personList: [CreateTripRequestPersonInput!]
+}
+
+input CreateTripRequestPersonInput {
+  id: Int
+  name: String
+}
+
+input CreateTripInput {
+  tripRequestId: Int
+  fromLocationId: Int!
+  toLocationId: Int!
+  departureTime: DateTime!
+  arrivalTime: DateTime!
+  peopleCapacity: Int!
+  cargoWeightCapacity: Float!
+  peopleCapacityRemaining: Int
+  cargoWeightCapacityRemaining: Float
+}
+
+input UpdateTripInput {
+  tripRequestId: Int
+  fromLocationId: Int
+  toLocationId: Int
+  departureTime: DateTime
+  arrivalTime: DateTime
+  peopleCapacity: Int
+  cargoWeightCapacity: Float
+  peopleCapacityRemaining: Int
+  cargoWeightCapacityRemaining: Float
+  id: Int!
+  createdById: Int
+  modifiedById: Int
 }
