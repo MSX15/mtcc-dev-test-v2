@@ -18,9 +18,6 @@ export default function PageRoutes()
       <Router>
       <Routes>
         <Route path="/" element={<Home />}></Route>
-          {/* <Route index element={<Home />} /> */}
-          {/* <Route path="blogs" element={<Blogs />} />
-          <Route path="contact" element={<Contact />} /> */}
         <Route path="/locations" element={<Location />} />
         <Route path="/trips" element={<Trip />} />
         <Route path="/trip-requests" element={<TripRequest />} />

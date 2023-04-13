@@ -13,7 +13,10 @@ export default function CardBasic({ entity, header }: {entity: any, header: stri
             }
             <div className="flex gap-3">
                 {
-                    Object.keys(entity).filter(x => !x.startsWith('_')).map((x,i) => 
+                    Object.keys(entity).filter(x => !x.startsWith('_') 
+                        && !Array.isArray(entity[x])
+                        && !(typeof entity[x] === 'object')
+                    ).map((x,i) => 
                         <div key={i} className="flex flex-col">
                             <div className="font-semibold capitalize">{x}</div>
                             <div className="">{entity[x]}</div>

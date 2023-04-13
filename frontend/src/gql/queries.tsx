@@ -13,4 +13,18 @@ query Locations
         modifiedAt
   }
 }
-`;
+`
+export const GET_LOCATION_BY_ID = gql`
+query Location($id:Int!)
+{ 
+	location(id: $id) {
+        id
+        name,
+        isDeleted,
+        createdById,
+        createdAt,
+        modifiedById,
+        modifiedAt
+  }
+}
+`

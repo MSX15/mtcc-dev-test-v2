@@ -55,7 +55,7 @@ const LocationForm = () => {
     );
   };
 
-export default function Location() {
+export default function TripRequest() {
 
     // const { loading, error, data } = useQuery(GET_LOCATIONS);
 
@@ -68,20 +68,68 @@ export default function Location() {
     let [ isAddSideDrawerOpen, setIsAddSideDrawerOpen ] = useState(false)
     const { loading, error, data } = useQuery(
         gql`
-        query Locations
+        query TripRequests
         { 
-            locations {
-            # locations(orderBy: "id") {
-                id
-                name,
-                # createdById,
-                # createdAt,
-                # modifiedById,
-                # modifiedAt
+          tripRequests {
+            id,
+            fromLocationId,
+            toLocationId,
+            personList {
+                id,
+                name
+            }
+            # departureTime,
+            # arrivalTime,
+            # peopleCapacity,
+            # peopleCapacityRemaining,
+            # cargoWeightCapacity,
+            # cargoWeightCapacityRemaining,
+            # statusId
+            # tripStatus : status{ name }
+            # createdById,
+            # createdAt,
+            # modifiedById,
+            # modifiedAt,
+            # fromLocation {
+            #     name
+            # },
+            # toLocation {
+            #     name
+            # }
+        
+        
+        
+            # tripRequest{
+            #   id,
+            #   createdBy{
+            #     name
+            #   }
+            # }
+            # tripTickets{
+            #   person{
+            #     name
+            #   }
+            #   cargo{
+            #     cargoWeight
+            #   }
+            # }
+            # status{
+            #   id,
+            #   name
+            # }
+            # createdBy{
+            #   id,
+            #   name,
+            # }
+            # modifiedBy{
+            #   id,
+            #   name
+            # }
           }
         }
         `
     );
+    console.log(data)
     return(
         <AppLayout>
             <div className="h-full w-full flex flex-col">
@@ -90,11 +138,11 @@ export default function Location() {
                     isOpenChanged={setIsAddSideDrawerOpen}
                 >
                     <div className="h-full w-full p-3">
-                        <h3 className="text-lg font-bold"> Add New Location</h3>
+                        <h3 className="text-lg font-bold"> Add New Trip Request</h3>
                         <LocationForm />
                     </div>
                 </SideDrawer>
-                <h2 className="font-bold py-5 pl-5 text-4xl"> Locations </h2>
+                <h2 className="font-bold py-5 pl-5 text-4xl"> Trip Requests </h2>
                 <div className="flex-grow min-h-0 overflow-auto whitespace-pre">
                 {
                     // (loading || loadingDelay)
@@ -109,11 +157,12 @@ export default function Location() {
                     // : JSON.stringify(data, null, 2)
                     :
                     <div className="flex flex-col gap-3 px-4 my-4">
-                        <ButtonAddBasic label="Add Location"
+                        <ButtonAddBasic label="Add Trip Request"
                             onClick={() => { setIsAddSideDrawerOpen(true) }}
                         />
                         {
-                            data.locations.map((x:any, i: number) => 
+                            // JSON.stringify(data, null, 2)
+                            data.tripRequests.map((x:any, i: number) => 
                                 <CardBasic key={i} header="name" entity={x} />    
                             )
                         }
