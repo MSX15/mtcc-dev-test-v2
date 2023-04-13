@@ -21,6 +21,7 @@ model Person {
   name         String
   code         String?
   tripRequests TripRequest[]
+  tripTickets  TripTicket[]
 }
 
 model Status {
@@ -33,6 +34,7 @@ model Status {
   trips               Trip[]
   tripRequests        TripRequest[]
   // cargoTickets        CargoTicket[]
+  tripTickets         TripTicket[]
 }
 
 model Location {
@@ -73,9 +75,10 @@ model Trip {
   modifiedById Int
   modifiedAt   DateTime @default(now()) @db.Timestamp(6)
 
-  fromLocation Location @relation("Trip_FromLocationIdToLocation", fields: [fromLocationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  toLocation   Location @relation("Trip_ToLocationIdToLocation", fields: [toLocationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  status       Status   @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  fromLocation Location     @relation("Trip_FromLocationIdToLocation", fields: [fromLocationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  toLocation   Location     @relation("Trip_ToLocationIdToLocation", fields: [toLocationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tripTickets  TripTicket[] @relation("TripTicket_FromTripIdToTrip")
+  status       Status       @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   // createdBy           Person?      @relation("Trip_CreatedByIdToPerson", fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction)
   // modifiedBy          Person?      @relation("Trip_ModifiedByIdToPerson", fields: [modifiedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
   // tripRequest         TripRequest? @relation(fields: [tripRequestId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -84,26 +87,36 @@ model Trip {
   // @@index([tripRequestId], map: "fki_FK_Trip_TripRequestId_TripRequest_Id")
 }
 
-// model TripTicket {
-//   id            Int      @id @default(autoincrement())
-//   cargoDetailId Int
-//   remarks       String?
-//   statusId      Int
-//   createdById   Int
-//   createdAt     DateTime @default(now()) @db.Timestamp(6)
-//   modifiedById  Int
-//   modifiedAt    DateTime @default(now()) @db.Timestamp(6)
+model TripTicket {
+  id                Int      @id @default(autoincrement())
+  tripId            Int
+  dependentTicketId Int?
+  personId          Int?
+  cargoId           Int?
+  remarks           String?
+  statusId          Int
+  createdById       Int
+  createdAt         DateTime @default(now()) @db.Timestamp(6)
+  modifiedById      Int
+  modifiedAt        DateTime @default(now()) @db.Timestamp(6)
 
-//   status      Status      @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-//   cargoDetail CargoDetail @relation(fields: [cargoDetailId], references: [id])
-// }
+  trip   Trip    @relation("TripTicket_FromTripIdToTrip", fields: [tripId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  cargo  Cargo?  @relation(fields: [cargoId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  person Person? @relation(fields: [personId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  status Status  @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
 
-// model CargoDetail {
-//   id           Int          @id @default(autoincrement())
-//   code         String       @default(uuid())
-//   weight       Float        @default(0)
-//   tripTickets TripTicket[]
-// }
+model Cargo {
+  id          Int           @id @default(autoincrement())
+  description String?
+  // cargoDimensionCategoryId Int
+  // cargoDimensions          String?
+  cargoWeight Float
+  // cargoDimensionCategory   CargoDimensionCategory @relation(fields: [cargoDimensionCategoryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tripRequest TripRequest[]
+  // tripTicket               TripTicket[]
+  tripTickets TripTicket[]
+}
 
 model TripRequest {
   id             Int       @id @default(autoincrement())
@@ -125,8 +138,8 @@ model TripRequest {
   status       Status   @relation(fields: [statusId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   personList Person[]
+  cargoList  Cargo[]
   // trip           Trip[]
-  // cargoList      Cargo[]
   // createdBy      Person?   @relation("TripRequest_FromCreatedByIdToOPerson", fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction)
   // modifiedBy     Person?   @relation("TripRequest_FromModifiedByIdToOPerson", fields: [modifiedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

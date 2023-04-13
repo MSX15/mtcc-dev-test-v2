@@ -1,5 +1,6 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
-import { CreateTripRequestPersonInput } from './create-trip-request-person.input';
+import { TripRequestPersonInput } from './trip-request-person.input';
+import { TripRequestCargoInput } from './trip-request-cargo.input';
 
 @InputType()
 export class CreateTripRequestInput {
@@ -30,6 +31,9 @@ export class CreateTripRequestInput {
   @Field(() => Int, { nullable: true })
   modifiedById: number;
   
-  @Field(() => [CreateTripRequestPersonInput], { nullable: true })
-  personList: [CreateTripRequestPersonInput]
+  @Field(() => [TripRequestPersonInput], { nullable: true, defaultValue: [] })
+  personList: [TripRequestPersonInput]
+  
+  @Field(() => [TripRequestCargoInput], { nullable: true, defaultValue: [] })
+  cargoList: [TripRequestCargoInput]
 }

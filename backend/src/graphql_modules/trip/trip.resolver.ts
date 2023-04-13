@@ -5,6 +5,7 @@ import { Trip } from './entities/trip.entity';
 import { CreateTripInput } from './dto/create-trip.input';
 import { UpdateTripInput } from './dto/update-trip.input';
 import { TripFilter } from './dto/trip.filter';
+import { AddTripTicketInput } from './dto/add-trip-ticket.input';
 // import { UpdateStatusOfEntityInput } from 'src/status/dto/update-status-of-entity.input';
 // import { UpsertTripTicketstInput } from './dto/upsert-trip-tickets.input';
 
@@ -41,6 +42,11 @@ export class TripResolver {
   @Mutation(() => Trip)
   removeTrip(@Args('id', { type: () => Int }) id: number) {
     return this.tripService.remove(id);
+  }
+
+  @Mutation(() => Trip)
+  addTripTicket(@Args('addTripTicketInput') addTripTicketInput: AddTripTicketInput) {
+    return this.tripService.addTicketTrip(addTripTicketInput);
   }
 
   // @Mutation(() => Trip)

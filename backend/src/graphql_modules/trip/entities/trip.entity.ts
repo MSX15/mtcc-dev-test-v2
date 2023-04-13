@@ -2,6 +2,7 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Location } from 'src/graphql_modules/location/entities/location.entity';
 // import { Person } from 'src/person/entities/person.entity';
 import { Status } from 'src/graphql_modules/status/entities/status.entity';
+import { TripTicket } from 'src/graphql_modules/tripTicket/entities/trip-ticket.entity';
 // import { TripRequest } from 'src/trip-request/entities/trip-request.entity';
 // import { TripTicket } from 'src/trip-ticket/entities/trip-ticket.entity';
 
@@ -75,6 +76,6 @@ export class Trip {
   // @Field(() => TripRequest, { nullable: true})
   // tripRequest: TripRequest  
 
-  // @Field(() => [TripTicket], { nullable: true })
-  // tripTickets: TripTicket[];
+  @Field(() => [TripTicket], { nullable: true })
+  tripTickets: TripTicket[];
 }

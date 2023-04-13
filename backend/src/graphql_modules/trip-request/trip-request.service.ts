@@ -15,7 +15,7 @@ export class TripRequestService {
     toLocation: true,
     // createdBy: true,
     // modifiedBy: true,
-    // cargoList: true,
+    cargoList: true,
     personList: true,
     status: true
   }
@@ -36,8 +36,7 @@ export class TripRequestService {
       throw new ValidationError(`At least one time constraint must be provided`)
     }
 
-    const { personList: personListInput, ...restOfInput } = createTripRequestInput;
-    // personListInput  ??= [];
+    const { personList: personListInput, cargoList: cargoListInput, ...restOfInput } = createTripRequestInput;
 
     let  personListWrites = {
       connect: personListInput?.reduce( (accu, x) => { x.id && accu.push({id: x.id}); return accu }, []),
@@ -50,10 +49,22 @@ export class TripRequestService {
       }, [])
     }
 
+    let  cargoListWrites = {
+      connect: cargoListInput?.reduce( (accu, x) => { x.id && accu.push({id: x.id}); return accu }, []),
+      create: cargoListInput?.reduce( (accu, x) => { 
+        if(!x.id) {
+          const { id: _, ...restOfX } = x;
+          accu.push(restOfX); 
+        }
+        return accu 
+      }, [])
+    }
+
     return await this.prisma.tripRequest.create({
        data: {
         ...restOfInput,
         personList: personListWrites,
+        cargoList: cargoListWrites,
         statusId: 1,
         createdById: 1,
         modifiedById: 1,

@@ -1,7 +1,7 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Location } from 'src/graphql_modules/location/entities/location.entity';
 import { Person } from 'src/graphql_modules/person/entities/person.entity';
-// import { Cargo } from 'src/cargo/entities/cargo.entity';
+import { Cargo } from 'src/graphql_modules/cargo/entities/cargo.entity';
 import { Status } from 'src/graphql_modules/status/entities/status.entity';
 @ObjectType()
 export class TripRequest {
@@ -59,9 +59,9 @@ export class TripRequest {
   @Field(() => Status)
   status: Status;
 
-  @Field(() => [Person], { nullable: true })
+  @Field(() => [Person], { nullable: true, defaultValue: [] })
   personList: Person[];
 
-  // @Field(() => [Cargo], { nullable: true })
-  // cargoList: Cargo[];
+  @Field(() => [Cargo], { nullable: true, defaultValue: [] })
+  cargoList: Cargo[];
 }
