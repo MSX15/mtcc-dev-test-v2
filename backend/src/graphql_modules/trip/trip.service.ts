@@ -40,7 +40,7 @@ export class TripService {
 
 
   async create(createTripInput: CreateTripInput) {
-    let input = { ...createTripInput }
+    // let input = { ...createTripInput }
 
     let { 
       peopleCapacityRemaining,
@@ -115,7 +115,14 @@ export class TripService {
     const result = await this.prisma.trip.findUnique({ 
       where: { id },
       include: { 
-        ...this.includes
+        ...this.includes,
+        tripTickets: {
+          include: {
+            person: true,
+            cargo: true,
+            status: true
+          }
+        }
       }
     })
 
@@ -204,15 +211,48 @@ export class TripService {
 
 
   async updateStatus(id: number, entityStatusId: number) {
-    // const entity = await this.prisma.trip.findUnique({ where: { id } })
+
+
+    const entity = await this.prisma.trip.findUnique({ where: { id },  include: { status: true } })
+    if((await entity).statusId !== 1)
+    {
+      throw new ValidationError(`Only [ Pending ] trips may be updated. Current trip status is [ ${entity.status.name} ]`)
+    }
+
     const randModifiedById = (Math.floor(Math.random() * 6) + 2)
-    await this.prisma.trip.update({
+    const modifiedAtBatchTime = dayjs().toDate();
+    const tripEntity = await this.prisma.trip.update({
       where: { id },
       data: { 
         // ...entity,
         statusId: entityStatusId,
         modifiedById: randModifiedById,
-        modifiedAt: dayjs().toDate()
+        modifiedAt: modifiedAtBatchTime,
+        tripTickets: {
+          updateMany: {
+            where: { 
+              tripId: id,
+              // Only update Trip Ticket Status if current status is Pending
+              statusId: 1
+            },
+            data:
+            {
+              statusId: entityStatusId,
+              modifiedById: randModifiedById,
+              modifiedAt: modifiedAtBatchTime
+            }
+          }
+        }
+      },
+      include: { 
+        ...this.includes,
+        tripTickets: {
+          include: {
+            person: true,
+            cargo: true,
+            status: true
+          }
+        }
       }
     })
 
@@ -224,12 +264,7 @@ export class TripService {
     //   }
     // })
 
-    return await this.prisma.trip.findUnique({ 
-      where: { id } ,
-      include: { 
-        ...this.includes
-      }
-    });
+    return tripEntity;
   }
 
   async upsertTripTickets(id: number, upsertTripTicketstInput: UpsertTripTicketstInput) {

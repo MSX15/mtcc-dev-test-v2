@@ -7,6 +7,7 @@ import { UpdateTripInput } from './dto/update-trip.input';
 import { TripFilter } from './dto/trip.filter';
 import { AddTripTicketInput } from './dto/add-trip-ticket.input';
 import { TripTicket } from '../tripTicket/entities/trip-ticket.entity';
+import { UpdateStatusOfEntityInput } from '../status/dto/update-status-of-entity.input';
 // import { UpdateStatusOfEntityInput } from 'src/status/dto/update-status-of-entity.input';
 // import { UpsertTripTicketstInput } from './dto/upsert-trip-tickets.input';
 
@@ -55,10 +56,10 @@ export class TripResolver {
     return this.tripService.cancelTicketTrip(tripTicketId);
   }
 
-  // @Mutation(() => Trip)
-  // updateTripStatus(@Args('updateStatusOfEntityInput') updateStatusOfEntityInput: UpdateStatusOfEntityInput) {
-  //   return this.tripService.updateStatus(updateStatusOfEntityInput.entityId, updateStatusOfEntityInput.entityStatusId);
-  // }
+  @Mutation(() => Trip)
+  updateTripStatus(@Args('updateStatusOfEntityInput') updateStatusOfEntityInput: UpdateStatusOfEntityInput) {
+    return this.tripService.updateStatus(updateStatusOfEntityInput.entityId, updateStatusOfEntityInput.entityStatusId);
+  }
 
   // @Mutation(() => Trip)
   // addTicketToTrip(@Args('upsertTripTicketstInput') upsertTripTicketstInput: UpsertTripTicketstInput) {

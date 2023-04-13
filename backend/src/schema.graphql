@@ -43,6 +43,7 @@ type TripTicket {
   id: Int!
   tripId: Int!
   personId: Int
+  person: Person
   cargoId: Int
   cargo: Cargo
   tripRequestId: Int
@@ -131,6 +132,7 @@ type Mutation {
   removeTrip(id: Int!): Trip!
   addTripTicket(addTripTicketInput: AddTripTicketInput!): Trip!
   cancelTripTicket(tripTicketId: Int!): TripTicket!
+  updateTripStatus(updateStatusOfEntityInput: UpdateStatusOfEntityInput!): Trip!
 }
 
 input CreateLocationInput {
@@ -222,4 +224,9 @@ input CargoInput {
   id: Int
   description: String
   cargoWeight: Float
+}
+
+input UpdateStatusOfEntityInput {
+  entityId: Int!
+  entityStatusId: Int!
 }
