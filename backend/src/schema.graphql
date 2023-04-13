@@ -118,6 +118,14 @@ input TripFilter {
   earliestArrival: DateTime
   latestArrival: DateTime
   statusId: Int
+  fromLocationId: Int
+  toLocationId: Int
+  fromLocationAtoLocationB: fromLocationAtoLocationB
+}
+
+input fromLocationAtoLocationB {
+  fromLocationId: Int!
+  toLocationId: Int!
 }
 
 type Mutation {

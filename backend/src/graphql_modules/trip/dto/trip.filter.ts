@@ -1,5 +1,15 @@
 import { ObjectType, Field, Int, InputType } from '@nestjs/graphql';
 
+
+@InputType()
+class fromLocationAtoLocationB {
+    @Field(() => Int)
+    fromLocationId: number
+    
+    @Field(() => Int)
+    toLocationId: number 
+}
+
 @InputType()
 export class TripFilter {
     // @Field(() => Date, {nullable: true })
@@ -22,4 +32,13 @@ export class TripFilter {
 
     @Field(() => Int, { nullable: true })
     statusId: number
+    
+    @Field(() => Int, { nullable: true })
+    fromLocationId: number
+
+    @Field(() => Int, { nullable: true })
+    toLocationId: number
+
+    @Field(() => fromLocationAtoLocationB, { nullable: true })
+    fromLocationAtoLocationB: fromLocationAtoLocationB
 }

@@ -74,6 +74,16 @@ export class TripService {
   }
 
 
+  // To be attempted via recursion
+  // Things to consider:
+  // -- Cycles: Could take departureTimes and arrivalTimes to consideration
+  // -- to avoid effectively. Still, checks should be in place to prevent stall
+  // -- even if data has logical errors
+  async findTripChains(fromLocationId: number, toLocationId: number)
+  {
+
+  }
+
   async findAll(tripFilter: TripFilter = null) {
     let filter:  any = {};
     if(tripFilter !== null)
@@ -98,6 +108,20 @@ export class TripService {
           },
           {
             statusId: tripFilter.statusId ? { equals: tripFilter.statusId } : {}
+          },
+          {
+            OR: [
+              { fromLocationId: tripFilter.fromLocationId ? { equals: tripFilter.fromLocationId } : {} },
+              { toLocationId: tripFilter.toLocationId ? { equals: tripFilter.toLocationId } : {} }
+            ]
+          },
+          {
+            AND: tripFilter.fromLocationAtoLocationB 
+            ? [
+              { fromLocationId: { equals: tripFilter.fromLocationAtoLocationB.fromLocationId } },
+              { toLocationId: { equals: tripFilter.fromLocationAtoLocationB.toLocationId }}
+            ]
+            : []
           }
         ]
       }
