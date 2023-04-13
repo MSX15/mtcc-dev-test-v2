@@ -28,3 +28,17 @@ query Location($id:Int!)
   }
 }
 `
+
+gql`
+mutation CreateLocation($createLocationData: CreateLocationInput!)
+{ 
+    createLocation(createLocationInput: $createLocationData){
+        id
+        name,
+        createdById,
+        createdAt,
+        modifiedById,
+        modifiedAt
+  }
+}
+`
