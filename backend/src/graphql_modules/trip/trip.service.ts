@@ -8,6 +8,7 @@ import { ValidationError } from 'apollo-server-express';
 // import { TripFilter } from './entities/trip.filter';
 import * as dayjs from 'dayjs'
 import { AddTripTicketInput } from './dto/add-trip-ticket.input';
+import { time } from 'console';
 
 @Injectable()
 export class TripService {
@@ -145,6 +146,9 @@ export class TripService {
       throw new ValidationError(`Only [ Pending ] trips may be updated. Current trip status is [ ${originalEntityData.status.name} ]`)
     }
 
+
+    // Add checks to see if the existing weights and passenger capacities of the TripTickets are also considered before
+    // changing Capacities. Or disallow capacity changes all togehter;
     if(entityDataUpdated.cargoWeightCapacityRemaining > entityDataUpdated.cargoWeightCapacity )
     {
       throw new ValidationError(`Cargo Capacity Remaining [ ${entityDataUpdated.cargoWeightCapacityRemaining} ] cannot exceed Cargo Capacity [ ${entityDataUpdated.cargoWeightCapacity} ]`)
@@ -268,16 +272,16 @@ export class TripService {
   }
 
 
-  async addTicketTrip(addTicketTripInput: AddTripTicketInput)
+  async addTripTicket(addTripTicketInput: AddTripTicketInput)
   {
     // VALIDATIONS
-    if((addTicketTripInput.cargo && addTicketTripInput.person) || (!addTicketTripInput.cargo && !addTicketTripInput.person))
+    if((addTripTicketInput.cargo && addTripTicketInput.person) || (!addTripTicketInput.cargo && !addTripTicketInput.person))
     {
       throw new ValidationError("Only Either Cargo or Passenger information must be provided for a ticket");
     }
 
     const tripEntity = await this.prisma.trip.findUnique({
-      where: { id: addTicketTripInput.tripId },
+      where: { id: addTripTicketInput.tripId },
       include: { status: true }
     })
 
@@ -291,15 +295,15 @@ export class TripService {
       throw new ValidationError(`Tickets may only be added to pending trips. Trip [ Id:  ${tripEntity.id} ] status is [ ${tripEntity.status.name} ]`)
     }
 
-    console.log("PERASON", addTicketTripInput.person ? 1: 0)
+    console.log("PERASON", addTripTicketInput.person ? 1: 0)
 
-    const tripEntityNewPeopleCapacityRemaining = tripEntity.peopleCapacityRemaining - (addTicketTripInput.person ? 1 : 0);
-    if(addTicketTripInput.person && tripEntityNewPeopleCapacityRemaining < 0)
+    const tripEntityNewPeopleCapacityRemaining = tripEntity.peopleCapacityRemaining - (addTripTicketInput.person ? 1 : 0);
+    if(addTripTicketInput.person && tripEntityNewPeopleCapacityRemaining < 0)
     {
       throw new ValidationError(`The passenger capacity for this trip [  Id: ${tripEntity.id } ] is full. You can sign up for a waitlist in case of any cancellations.`)
     }
     
-    const cargoEntity = await this.prisma.cargo.findUnique({ where: { id: addTicketTripInput.cargo?.id ?? 0}})
+    const cargoEntity = await this.prisma.cargo.findUnique({ where: { id: addTripTicketInput.cargo?.id ?? 0}})
     const tripEntityNewCargoWeightCapacityRemaining = tripEntity.cargoWeightCapacityRemaining - (cargoEntity?.cargoWeight ?? 0);
     console.log(tripEntityNewCargoWeightCapacityRemaining);
     if(cargoEntity && tripEntityNewCargoWeightCapacityRemaining < 0)
@@ -338,8 +342,8 @@ export class TripService {
         tripTickets: {
           // set: { },
           create: {
-            personId: addTicketTripInput.person?.id ?? undefined,
-            cargoId: addTicketTripInput.cargo?.id  ?? undefined,
+            personId: addTripTicketInput.person?.id ?? undefined,
+            cargoId: addTripTicketInput.cargo?.id  ?? undefined,
             statusId: 1,
             createdById: 1,
             modifiedById: 1
@@ -353,6 +357,35 @@ export class TripService {
             cargo: true
           }
         }
+      }
+    })
+  }
+
+  async cancelTicketTrip(tripTicketId: number)
+  {
+
+    const tripTicketEntity = await this.prisma.tripTicket.findUnique({
+      where: { id: tripTicketId },
+      include: { status: true }
+    })
+
+    if(!tripTicketEntity)
+    {
+      throw new ValidationError(`Trip Ticket [ Id: ${  tripTicketId} ] does not exist.`)
+    }
+
+    if(tripTicketEntity.statusId !== 1)
+    {
+      throw new ValidationError(`Only [ Pending ] Trip Tickets may be cancelled. Trip Ticket [ Id: ${ tripTicketId } ] status is [ ${ tripTicketEntity.status.name } ].`)
+    }
+
+    return await this.prisma.tripTicket.update({
+      where: { id: tripTicketId },
+      data: {
+        statusId: 3
+      },
+      include: {
+        status: true
       }
     })
   }
